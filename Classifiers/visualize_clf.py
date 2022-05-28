@@ -1,3 +1,7 @@
+import numpy as np
+import seaborn as sns
+
+
 def visualize_clf(clf, X, Y, title, 
                   xlabel, ylabel,
                   marker_size=80,

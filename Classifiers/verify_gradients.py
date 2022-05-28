@@ -1,3 +1,7 @@
+from  SoftSVM import SoftSVM
+import matplotlib.pyplot as plt
+import numpy as np
+
 def numerical_subgradient(w, b, C, X, y, delta=1e-4):
     w_ = w.copy()
     g_w = np.zeros_like(w_)
