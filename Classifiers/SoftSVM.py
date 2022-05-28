@@ -48,9 +48,10 @@ class SoftSVM(BaseEstimator, ClassifierMixin):
         norm = np.linalg.norm(w)
 
         # TODO: complete the loss calculation
-        loss = 0.0
+        max_element_wize = np.maximum(np.zeros_like(hinge_inputs), 1 - hinge_inputs)
+        loss = norm**2 + C*(np.sum(max_element_wize))
 
-        return
+        return loss
 
     @staticmethod
     def subgradient(w, b: float, C: float, X, y):
@@ -65,8 +66,16 @@ class SoftSVM(BaseEstimator, ClassifierMixin):
         :return: a tuple with (the gradient of the weights, the gradient of the bias)
         """
         # TODO: calculate the analytical sub-gradient of soft-SVM w.r.t w and b
-        g_w = None
-        g_b = 0.0
+
+        margins = (X.dot(w) + b).reshape(-1, 1)
+        hinge_inputs = np.multiply(margins, y.reshape(-1, 1))
+        max_element_wize = np.maximum(np.zeros_like(hinge_inputs), 1 - hinge_inputs)
+        f_z = np.zeros_like(max_element_wize)
+        f_z[np.nonzero(max_element_wize)] = -1
+        X_weights = np.multiply(f_z, y)
+
+        g_w = 2*w + C * np.ravel(np.transpose(X).dot(X_weights))
+        g_b = C *np.sum(X_weights)
 
         return g_w, g_b
 
@@ -98,12 +107,12 @@ class SoftSVM(BaseEstimator, ClassifierMixin):
             batch_y = y[start_idx: end_idx]
 
             # TODO: Compute the (sub)gradient of the current *batch*
-            g_w, g_b = None, None
+            g_w, g_b = self.subgradient(self.w, self.b, self.C, batch_X, batch_y)
 
             # Perform a (sub)gradient step
             # TODO: update the learned parameters correctly
-            self.w = None
-            self.b = 0.0
+            self.w -= self.lr * g_w
+            self.b -= self.lr * g_b
 
             if keep_losses:
                 losses.append(self.loss(self.w, self.b, self.C, X, y))
@@ -133,6 +142,6 @@ class SoftSVM(BaseEstimator, ClassifierMixin):
                  NOTE: the labels must be either +1 or -1
         """
         # TODO: compute the predicted labels (+1 or -1)
-        y_pred = None
+        y_pred = np.sign((X.dot(self.w) + self.b).reshape(-1, 1))
 
         return y_pred
