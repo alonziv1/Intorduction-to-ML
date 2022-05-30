@@ -1,5 +1,6 @@
 from sklearn.base import BaseEstimator, ClassifierMixin
 import numpy as np
+import pandas as pd
 
 class SoftSVM(BaseEstimator, ClassifierMixin):
     """
@@ -68,10 +69,11 @@ class SoftSVM(BaseEstimator, ClassifierMixin):
         # TODO: calculate the analytical sub-gradient of soft-SVM w.r.t w and b
 
         margins = (X.dot(w) + b).reshape(-1, 1)
-        hinge_inputs = np.multiply(margins, y.reshape(-1, 1))
+        hinge_inputs = np.multiply(margins, np.array(y.reshape(-1, 1)))
         max_element_wize = np.maximum(np.zeros_like(hinge_inputs), 1 - hinge_inputs)
-        f_z = np.zeros_like(max_element_wize)
-        f_z[np.nonzero(max_element_wize)] = -1
+        f_z = np.ravel((np.zeros_like(max_element_wize).reshape(-1, 1)))
+        nonzero_indices = np.nonzero(max_element_wize)
+        # f_z[nonzero_indices] = -1
         X_weights = np.multiply(f_z, y)
 
         g_w = 2*w + C * np.ravel(np.transpose(X).dot(X_weights))
