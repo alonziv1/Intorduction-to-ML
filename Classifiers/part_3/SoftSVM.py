@@ -1,5 +1,6 @@
 from sklearn.base import BaseEstimator, ClassifierMixin
 import numpy as np
+import pandas as pd
 
 class SoftSVM(BaseEstimator, ClassifierMixin):
     """
@@ -42,6 +43,8 @@ class SoftSVM(BaseEstimator, ClassifierMixin):
         :param y: targets for loss computation; array of shape (n_samples,)
         :return: the Soft SVM objective loss (float scalar)
         """
+
+        y = np.array(np.ravel(y))
         margins = (X.dot(w) + b).reshape(-1, 1)
         hinge_inputs = np.multiply(margins, y.reshape(-1, 1))
 
@@ -67,11 +70,13 @@ class SoftSVM(BaseEstimator, ClassifierMixin):
         """
         # TODO: calculate the analytical sub-gradient of soft-SVM w.r.t w and b
 
-        margins = (X.dot(w) + b).reshape(-1, 1)
+        y = np.array(np.ravel(y))
+        margins = np.array((X.dot(w) + b)).reshape(-1, 1)
         hinge_inputs = np.multiply(margins, y.reshape(-1, 1))
-        max_element_wize = np.maximum(np.zeros_like(hinge_inputs), 1 - hinge_inputs)
-        f_z = np.zeros_like(max_element_wize)
-        f_z[np.nonzero(max_element_wize)] = -1
+        max_element_wize = np.ravel(np.maximum(np.zeros_like(hinge_inputs), 1 - hinge_inputs))
+        f_z = np.ravel(np.zeros_like(max_element_wize).reshape(-1, 1))
+        nonzero_indices = np.nonzero(max_element_wize)
+        f_z[nonzero_indices] = -1
         X_weights = np.multiply(f_z, y)
 
         g_w = 2*w + C * np.ravel(np.transpose(X).dot(X_weights))
@@ -142,6 +147,6 @@ class SoftSVM(BaseEstimator, ClassifierMixin):
                  NOTE: the labels must be either +1 or -1
         """
         # TODO: compute the predicted labels (+1 or -1)
-        y_pred = np.sign((X.dot(self.w) + self.b).reshape(-1, 1))
+        y_pred = np.sign(np.array((X.dot(self.w) + self.b)).reshape(-1, 1))
 
         return y_pred
