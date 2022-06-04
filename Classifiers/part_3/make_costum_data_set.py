@@ -26,6 +26,6 @@ transform_labels(test_data)
 
 
 
-train_data.to_csv(r'C:\Users\alonz\Documents\GitHub\Intorduction-to-ML\Classifiers\part_3\part_3_train_data_new.csv', index = False)
-test_data.to_csv(r'C:\Users\alonz\Documents\GitHub\Intorduction-to-ML\Classifiers\part_3\part_3_test_data_new.csv', index = False)
+train_data.to_csv(r'C:\Users\alonz\Documents\GitHub\Intorduction-to-ML\Classifiers\part_4\part_4_train_data.csv', index = False)
+test_data.to_csv(r'C:\Users\alonz\Documents\GitHub\Intorduction-to-ML\Classifiers\part_4\part_4_test_data.csv', index = False)
 
