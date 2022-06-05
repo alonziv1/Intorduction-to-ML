@@ -43,8 +43,8 @@ def visualize_clf(clf, X, Y, title,
 
     cs = plt.contourf(xx, yy, Z, cmap=custom_cmap, alpha=0.35)
 
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
+    plt.xlabel(xlabel, fontsize = 'x-large')
+    plt.ylabel(ylabel, fontsize = 'x-large')
     plt.grid(alpha=0.75)
 
     # Plot the training points
@@ -57,5 +57,6 @@ def visualize_clf(clf, X, Y, title,
 
     plt.title(title, fontsize=20)
     plt.axis("tight")
+    plt.legend()
     plt.show()
    
