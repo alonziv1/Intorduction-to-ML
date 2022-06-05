@@ -106,3 +106,6 @@ def train_and_test_tuned_C_svm_clf (X_train, y_train, X_test, y_test ,optimal_C 
     test_accuracy = svm_clf.score(X_test, y_test)
     print("the test accuracy is ", test_accuracy)
 
+
+    
+
