@@ -39,7 +39,6 @@ class LinearRegressor(BaseEstimator, RegressorMixin):
         :param y: targets for loss computation; array of shape (n_samples,)
         :return: the linear regression objective loss (float scalar)
         """
-        # X = X.to_numpy()
         y = np.array(np.ravel(y))
         h_results = X.dot(w)
         b_vec = np.full((y.size), b)
@@ -61,12 +60,13 @@ class LinearRegressor(BaseEstimator, RegressorMixin):
         :return: a tuple with (the gradient of the weights, the gradient of the bias)
         """
         # TODO: calculate the analytical gradient w.r.t w and b
+        X = X.to_numpy()
         y = np.array(np.ravel(y))
-        X_t = np.transpose(X)
-        h_results = X.dot(w)
+        h_results = np.array(X.dot(w.T))
         b_vec = np.full((y.size), b)
-        args = h_results + b_vec - y
-        g_w = X_t.dot(args)
+        args = np.add(h_results, b_vec)
+        args = args - y  
+        g_w = np.ravel(np.transpose(X).dot(args.T))
         g_w = (2 / y.size) * g_w
         g_b = (2 / y.size) * np.sum(args)
         return g_w, g_b

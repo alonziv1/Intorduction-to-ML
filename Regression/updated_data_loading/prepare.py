@@ -46,7 +46,7 @@ def select_features(data):
   return _data
 
 def select_features_after(data):
-  return data.drop(columns = ['low_appetite','cough'])
+  return data.drop(columns = ['low_appetite','cough','sex'])
 
 def transform_features(data):
   string_to_numeric(data)

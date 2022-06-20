@@ -11,6 +11,16 @@ X, y= train_test_split(train_data, test_size=0.2, train_size=0.8, random_state=1
 # functions are implemented in LinearRegressor.py
 
 # A4:
-X = X.drop(columns = ['covid_score', 'spread_score'])
-y = y['covid_score']
-ver_g.compare_gradients(X, y, deltas=np.logspace(-7, -2, 9))
+y_train = X[['covid_score']]
+X_train = X.copy()
+X_train.drop(['covid_score'], axis = 1, inplace = True)
+X_train.drop(['spread_score'], axis = 1, inplace = True)
+
+ver_g.compare_gradients(X_train, y_train, deltas=np.logspace(-7, -2, 9))
+
+# A5:
+y_val = y[['covid_score']]
+X_val = y.copy()
+X_val.drop(['covid_score'], axis = 1, inplace = True)
+X_val.drop(['spread_score'], axis = 1, inplace = True)
+test_lr(X_train, y_train, X_val, y_val, "Train and Validation losses as a function vs. iteration number for different learning rates")
