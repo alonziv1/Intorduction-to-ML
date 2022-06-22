@@ -1,7 +1,7 @@
-from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.model_selection import train_test_split
 import updated_data_loading.preliminary as pre
 import HW3_code.verify_gradients as ver_g
+import HW3_code.test_lr as tl
 import pandas as np
 # updated preprocess phase:
 test_data, train_data, raw_blood = pre.updated_preprocess()
@@ -23,4 +23,4 @@ y_val = y[['covid_score']]
 X_val = y.copy()
 X_val.drop(['covid_score'], axis = 1, inplace = True)
 X_val.drop(['spread_score'], axis = 1, inplace = True)
-test_lr(X_train, y_train, X_val, y_val, "Train and Validation losses as a function vs. iteration number for different learning rates")
+tl.test_lr(X_train, y_train, X_val, y_val, "Train and Validation losses as a function vs. iteration number for different learning rates")
