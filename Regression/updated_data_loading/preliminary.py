@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-# import prepare as p
+import updated_data_loading.prepare as p
 
 def updated_preprocess():
     dataset = pd.read_csv('HW3_data.csv')
