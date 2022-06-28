@@ -22,8 +22,8 @@ train_data = train_data.copy()
 y = train_data['covid_score']
 X = train_data.drop(['covid_score', 'spread_score'] ,axis = 1)
 
-alphas = np.logspace(start = -3, stop = 3 , base = 10, num = 50 )
-# alphas = np.arange(0,5,0.1)
+# alphas = np.logspace(start = -3, stop = 3 , base = 10, num = 50 )
+alphas = np.arange(3,7,0.1)
 poly_train_scores = []
 poly_val_scores = []
 linear_train_scores = []

@@ -33,11 +33,15 @@ def prepare_data(data, training_data):
     print(prepared_training_data.columns)
     prepared_data, prepared_training_data = normalize_features(prepared_data, prepared_training_data)
     print(prepared_training_data.columns)
+
     prepared_data = prepared_data[sorted(prepared_data.columns)]
+    prepared_training_data = prepared_training_data[sorted(prepared_training_data.columns)]
+
 
     #i added this for the part 1 of major 2 -N
-    prepared_training_data = normalize_features(prepared_training_data,prepared_training_data)
+    # prepared_training_data = normalize_features(prepared_training_data,prepared_training_data)
     # prepared_training_data = prepared_training_data[sorted(prepared_training_data.columns)]
+
 
     return prepared_data, prepared_training_data
 
@@ -141,22 +145,31 @@ def most_freq_imputate_features(data, training_data):
 def normalize_features(data, training_data):
   
   from sklearn import preprocessing
-  # covid = training_data['covid_score']
-  # spread = training_data['spread_score']
-  # training_data.drop(['covid_score'], axis = 1, inplace = True)
-  # training_data.drop(['spread_score'], axis = 1, inplace = True)
-  scaler = preprocessing.MinMaxScaler().fit(training_data)
-  # training_data = training_data.assign(covid_score=covid)
-  # training_data = training_data.assign(spread_score=spread)
+  
+  train_covid = training_data['covid_score']
+  train_spread = training_data['spread_score']
 
   covid = data['covid_score']
   spread = data['spread_score']
-  scaled_data = scaler.transform(data)
 
-  data.loc[:,:] = scaled_data
+  training_data.drop(['covid_score'], axis = 1, inplace = True)
+  training_data.drop(['spread_score'], axis = 1, inplace = True)
+
   data.drop(['spread_score'],axis = 1, inplace = True)
   data.drop(['covid_score'],axis = 1, inplace = True)
+
+  scaler = preprocessing.StandardScaler()
+
+  scaled_training_data = scaler.fit_transform(training_data)
+  scaled_data = scaler.transform(data)
+  
+  training_data.loc[:,:] = scaled_training_data
+  data.loc[:,:] = scaled_data
+  
+  training_data = training_data.assign(covid_score=train_covid)
+  training_data = training_data.assign(spread_score=train_spread)
+  
   data = data.assign(covid_score=covid)
   data = data.assign(spread_score=spread)
-
+  
   return data, training_data
