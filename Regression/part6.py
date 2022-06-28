@@ -61,7 +61,7 @@ plt.title('score of poly ridge regressor w.r.t. alpha parameter', fontsize = 32)
 plt.legend(fontsize = 20)
 plt.show()
 
-opt_poly_reg = Pipeline([('feature_mapping', PolynomialFeatures()), ('normalization', StandardScaler()),('Ridge', Ridge(alpha=val_opt_alpha, fit_intercept=True))])
+opt_poly_reg = Pipeline([('feature_mapping', PolynomialFeatures()), ('normalization', MinMaxScaler()),('Ridge', Ridge(alpha=val_opt_alpha, fit_intercept=True))])
 predictions = opt_poly_reg.fit(X, y).predict(X)
 
 
