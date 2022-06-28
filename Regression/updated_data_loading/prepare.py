@@ -26,18 +26,18 @@ def prepare_data(data, training_data):
    
     prepared_data, prepared_training_data = mean_imputate_features(prepared_data, prepared_training_data)
     prepared_data, prepared_training_data = median_imputate_features(prepared_data, prepared_training_data)
-    # prepared_data, prepared_training_data = most_freq_imputate_features(prepared_data, prepared_training_data)
+    prepared_data, prepared_training_data = most_freq_imputate_features(prepared_data, prepared_training_data)
 
     prepared_training_data = select_features_after(prepared_training_data)
     prepared_data = select_features_after(prepared_data)
-
-    prepared_data = normalize_features(prepared_data, prepared_training_data)
-
+    print(prepared_training_data.columns)
+    prepared_data, prepared_training_data = normalize_features(prepared_data, prepared_training_data)
+    print(prepared_training_data.columns)
     prepared_data = prepared_data[sorted(prepared_data.columns)]
 
     #i added this for the part 1 of major 2 -N
     prepared_training_data = normalize_features(prepared_training_data,prepared_training_data)
-    prepared_training_data = prepared_training_data[sorted(prepared_training_data.columns)]
+    # prepared_training_data = prepared_training_data[sorted(prepared_training_data.columns)]
 
     return prepared_data, prepared_training_data
 
@@ -66,8 +66,8 @@ def string_to_numeric(data):
 
 
 def one_hot_encoding(data):
-  data.replace({"A+": "A", "A-": "A", "B+": "Others",
-                    "B-": "Others", "AB+": "Others", "AB-": "Others", "O+": "O", "O-": "O"}, inplace=True)
+  data.replace({"A+": "Others", "A-": "Others", "B+": "B",
+                    "B-": "B", "AB+": "B", "AB-": "B", "O+": "O", "O-": "O"}, inplace=True)
   blood_type_num = pd.get_dummies(data['blood_type'])
   joined_data = data.join(blood_type_num)
   joined_data.drop(['blood_type'], axis = 1, inplace = True)
@@ -133,18 +133,30 @@ def median_imputate_features(data, training_data):
 def most_freq_imputate_features(data, training_data):
 
     imputer2 = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
-    training_data[['A', 'O', 'Others']] = imputer2.fit_transform(training_data[['A', 'O', 'Others']])
-    data[['A', 'O', 'Others']] = imputer2.transform(data[['A', 'O', 'Others']])
+    training_data[['B', 'O', 'Others']] = imputer2.fit_transform(training_data[['B', 'O', 'Others']])
+    data[['B', 'O', 'Others']] = imputer2.transform(data[['B', 'O', 'Others']])
+
     return data, training_data
 
 def normalize_features(data, training_data):
   
   from sklearn import preprocessing
-
+  # covid = training_data['covid_score']
+  # spread = training_data['spread_score']
+  # training_data.drop(['covid_score'], axis = 1, inplace = True)
+  # training_data.drop(['spread_score'], axis = 1, inplace = True)
   scaler = preprocessing.MinMaxScaler().fit(training_data)
+  # training_data = training_data.assign(covid_score=covid)
+  # training_data = training_data.assign(spread_score=spread)
 
+  covid = data['covid_score']
+  spread = data['spread_score']
   scaled_data = scaler.transform(data)
 
   data.loc[:,:] = scaled_data
+  data.drop(['spread_score'],axis = 1, inplace = True)
+  data.drop(['covid_score'],axis = 1, inplace = True)
+  data = data.assign(covid_score=covid)
+  data = data.assign(spread_score=spread)
 
-  return data
+  return data, training_data
